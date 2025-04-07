@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Портфолио с анимацией</title>
+    <style>
+        body {
+            margin: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(50, 50, 50, 0.7);
+            padding: 15px 30px;
+            border-radius: 20px;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .projects-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -40%);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            width: 80%;
+            max-width: 1200px;
+            padding: 25px;
+            z-index: 50;
+        }
+
+        .project-card {
+            background: rgba(50, 50, 50, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .project-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .status-completed {
+            background: rgba(76, 175, 80, 0.3);
+            color: #4CAF50;
+        }
+
+        .status-in-progress {
+            background: rgba(255, 193, 7, 0.3);
+            color: #FFC107;
+        }
+
+        .project-description {
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 15px;
+            margin-top: auto;
+        }
+
+        .project-link {
+            color: #64B5F6;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background: rgba(100, 181, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            background: rgba(100, 181, 246, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div class="header">Портфолио</div>
+
+    <div class="projects-container">
+        <!-- Пример карточки проекта 1 -->
+        <div class="project-card">
+            <h3 class="project-title">Умный дом</h3>
+            <div class="project-status status-completed">Завершен</div>
+            <p class="project-description">
+                Система управления умным домом с использованием IoT технологий 
+                и машинного обучения для автоматизации процессов.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-item">Python</span>
+                <span class="tech-item">IoT</span>
+                <span class="tech-item">TensorFlow</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="project-link">Демо</a>
+                <a href="#" class="project-link">GitHub</a>
+            </div>
+        </div>
+
+        <!-- Пример карточки проекта 2 -->
+        <div class="project-card">
+            <h3 class="project-title">Мобильное приложение</h3>
+            <div class="project-status status-in-progress">В разработке</div>
+            <p class="project-description">
+                Кроссплатформенное приложение для управления персональными 
+                финансами с синхронизацией между устройствами.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-item">Flutter</span>
+                <span class="tech-item">Dart</span>
+                <span class="tech-item">Firebase</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="project-link">Прототип</a>
+            </div>
+        </div>
+
+        <!-- Пример карточки проекта 3 -->
+        <div class="project-card">
+            <h3 class="project-title">Веб-платформа</h3>
+            <div class="project-status status-completed">Завершен</div>
+            <p class="project-description">
+                Облачная платформа для совместной работы над проектами 
+                с системой управления задачами и чатом.
+            </p>
+            <div class="tech-stack">
+                <span class="tech-item">React</span>
+                <span class="tech-item">Node.js</span>
+                <span class="tech-item">MongoDB</span>
+            </div>
+            <div class="project-links">
+                <a href="#" class="project-link">Демо</a>
+                <a href="#" class="project-link">Документация</a>
+            </div>
+        </div>
+        <div class="project-card"></div>
+        <div class="project-card"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Настройки
+        const particles = [];
+        const particleCount = 30;
+        const minSize = 15;
+        const maxSize = 40;
+        const maxSpeed = 1.5;
+        const rotationSpeed = 0.02;
+
+        class Particle {
+            constructor() {
+                this.baseSize = Math.random() * (maxSize - minSize) + minSize;
+                this.size = this.baseSize;
+                this.x = Math.random() * (canvas.width - this.size * 2);
+                this.y = Math.random() * (canvas.height - this.size * 2);
+                this.speedX = (Math.random() * maxSpeed * 2) - maxSpeed;
+                this.speedY = (Math.random() * maxSpeed * 2) - maxSpeed;
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+                this.angle = Math.random() * Math.PI * 2;
+                this.sizePhase = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                // Движение
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                // Вращение
+                this.angle += rotationSpeed;
+                
+                // Пульсация размера
+                this.sizePhase += 0.02;
+                this.size = this.baseSize * (1 + 0.2 * Math.sin(this.sizePhase));
+
+                // Отскок от границ
+                if (this.x <= 0 || this.x >= canvas.width - this.size) {
+                    this.speedX *= -1;
+                }
+                if (this.y <= 0 || this.y >= canvas.height - this.size) {
+                    this.speedY *= -1;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 20;
+                
+                // Перенос системы координат в центр квадрата
+                ctx.translate(
+                    this.x + this.size/2,
+                    this.y + this.size/2
+                );
+                
+                // Вращение
+                ctx.rotate(this.angle);
+                
+                // Рисование квадрата
+                ctx.fillStyle = this.color;
+                ctx.fillRect(
+                    -this.size/2,
+                    -this.size/2,
+                    this.size,
+                    this.size
+                );
+                
+                ctx.restore();
+            }
+        }
+
+        function init() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+
+        // Обработчик изменения размера окна
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        init();
+        animate();
+    </script>
+</body>
+</html>
